@@ -1,0 +1,174 @@
+/*
+ * Copyright (C) 2014 Firefly, Inc.
+ * arch/arm/boot/dts/lcd-ips5k0350fpc-mipi.dtsi
+ * create date: 2014-04-15
+ * lcd model: ips5k0350fpc
+ * resolution: 1080X1920
+ * mipi channel: single 
+ */
+
+/* Firefly-RK3288-AIO kernel config
+ *
+ * kernel/arch/arm/configs/firefly-rk3288-AIO_defconfig
+ *  -CONFIG_LCD_GENERAL=y
+ *  +# CONFIG_LCD_GENERAL is not set
+ *  +# CONFIG_TC358768_RGB2MIPI is not set
+ *  -# CONFIG_LCD_MIPI is not set
+ *  +CONFIG_LCD_MIPI=y
+ *  -# CONFIG_MIPI_DSI is not set
+ *  +CONFIG_MIPI_DSI=y
+ *  +CONFIG_RK32_MIPI_DSI=y
+ *
+*/
+
+#include <dt-bindings/rkmipi/mipi_dsi.h>
+/ {
+	backlight {
+		compatible = "pwm-backlight";
+		pwms = <&pwm1 0 25000>;
+		rockchip,pwm_id= <1>;
+		/* | dark(255-221) | light scale(220-0) | , scale_div=255*/
+		brightness-levels = <200 199 198 197 196 195 194 193 192 191 190 189 188 187 186 185 184 183 182 181 180 179 178 177 176 175 174 173 172 171 170 169 168 167 166 165 164 163 162 161 160 159 158 157 156 155 154 153 152 151 150 149 148 147 146 145 144 143 142 141 140 139 138 137 136 135 134 133 132 131 130 129 128 127 126 125 124 123 122 121 120 119 118 117 116 115 114 113 112 111 110 109 108 107 106 105 104 103 102 101 100 99 98 97 96 95 94 93 92 91 90 89 88 87 86 85 84 83 82 81 80 79 78 77 76 75 74 73 72 71 70 69 68 67 66 65 64 63 62 61 60 59 58 57 56 55 54 53 52 51 50 49 48 47 46 45 44 43 42 41 40 39 38 37 36 35 34 33 32 31 30 29 28 27 26 25 24 23 22 21 20 19 18 17 16 15 14 13 12 11 10 9 8 7 6 5 4>;
+		default-brightness-level = <10>;
+        brightness-reversal = <1>;
+		//enable-gpios = <&gpio5 GPIO_C1 GPIO_ACTIVE_HIGH>;
+	};
+
+		/* about mipi */
+		disp_mipi_init: mipi_dsi_init{
+					compatible = "rockchip,mipi_dsi_init";
+					rockchip,screen_init	= <1>;
+					rockchip,dsi_lane		= <4>;
+					rockchip,dsi_hs_clk		= <1000>;
+					rockchip,mipi_dsi_num	= <1>;
+		};
+		disp_mipi_power_ctr: mipi_power_ctr {
+					compatible = "rockchip,mipi_power_ctr";
+										
+					mipi_lcd_rst:mipi_lcd_rst{
+							compatible = "rockchip,lcd_rst";
+							rockchip,gpios = <&gpio7 GPIO_B5 GPIO_ACTIVE_HIGH>;
+							rockchip,delay = <100>;
+					};
+													
+					mipi_lcd_en:mipi_lcd_en {
+							compatible = "rockchip,lcd_en";
+							rockchip,gpios = <&gpio5 GPIO_C1 GPIO_ACTIVE_HIGH>;
+							rockchip,delay = <100>;
+					};
+
+		};
+		disp_mipi_init_cmds: screen-on-cmds {
+					rockchip,cmd_debug = <1>;
+					compatible = "rockchip,screen-on-cmds";
+					rockchip,on-cmds1 {
+							compatible = "rockchip,on-cmds";
+							rockchip,cmd_type = <LPDT>;
+							rockchip,dsi_id = <0>;
+							rockchip,cmd = <0x05 0x29>;
+							rockchip,cmd_delay = <0>;
+					};
+
+					rockchip,on-cmds2 {
+							compatible = "rockchip,on-cmds";
+							rockchip,cmd_type = <LPDT>;
+							rockchip,dsi_id = <0>;
+							rockchip,cmd = <0x05 0x11>;
+							rockchip,cmd_delay = <200>;
+					};
+		};
+
+		disp_timings: display-timings {
+                        native-mode = <&timing0>;
+                        compatible = "rockchip,display-timings";
+                        timing0: timing0 {
+				screen-type = <SCREEN_MIPI>;
+				lvds-format = <LVDS_8BIT_2>;
+				out-face    = <OUT_P666>;
+				color-mode = <COLOR_RGB>;
+				clock-frequency = <80000000>;
+				hactive = <768>;
+				vactive = <1024>;
+				hsync-len = <64>;
+				hback-porch = <56>;
+				hfront-porch = <60>;
+				
+				vsync-len = <14>;
+				vback-porch = <30>;
+				vfront-porch = <36>;
+				
+				hsync-active = <0>;
+				vsync-active = <0>;
+				de-active = <0>;
+				pixelclk-active = <1>;
+				swap-rb = <0>;
+				swap-rg = <0>;
+				swap-gb = <0>;
+                     	};
+               };
+};
+
+&dsihost0 {
+	status = "okay";
+};
+
+&disp_timings {
+	native-mode = <&timing0>;
+};
+
+&rk_screen {
+	 display-timings = <&disp_timings>;
+};
+
+/*lcdc0 as PRMRY(HDMI)*/
+&lcdc0 {
+	status = "okay";
+	rockchip,iommu-enabled = <1>;
+	rockchip,prop = <PRMRY>;
+        power_ctr: power_ctr {
+                 rockchip,debug = <1>;
+        };
+};
+
+&lcdc1 {
+	status = "okay";
+	rockchip,iommu-enabled = <1>;
+	rockchip,prop = <EXTEND>;
+};
+
+&i2c4 {
+	status = "okay";
+
+        mt@40 {
+                 status = "okay";
+                 compatible = "firefly,gsl3680";
+                 reg = <0x40>;
+                 touch-gpio = <&gpio5 GPIO_C3 IRQ_TYPE_EDGE_RISING>;
+                 reset-gpio = <&gpio7 GPIO_B1 GPIO_ACTIVE_LOW>;
+                 max-y = <2048>;
+                 max-x = <1536>;
+                 flip-x = <1>;
+                 flip-y = <1>;
+                 swap-xy = <0>;
+         };
+/*
+        mpu6050:mpu@68{
+            status = "okay";
+            compatible = "mpu6050";
+            reg = <0x68>;
+            mpu-int_config = <0x10>;
+            mpu-level_shifter = <0>;
+            mpu-orientation = <0 1 0 1 0 0 0 0 1>;
+            orientation-x= <1>;
+            orientation-y= <1>;
+            orientation-z= <1>;
+            irq-gpio = <&gpio5 GPIO_C2 GPIO_ACTIVE_LOW>;
+            mpu-debug = <0>;
+        };
+*/
+};
+
+&pwm1 {
+	status = "okay";
+};
+

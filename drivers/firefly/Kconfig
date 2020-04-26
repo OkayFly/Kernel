@@ -1,0 +1,11 @@
+menu "Firefly Device Options"
+
+config FIREFLY_RK3288_DEVICE_AIO
+	bool "select firefly rk3288 device aio"
+	default n
+
+config FIREFLY_RK3288_DEVICE_AIO_3288C
+    bool "select firefly rk3288 device aio-3288c"
+    default n
+
+endmenu
