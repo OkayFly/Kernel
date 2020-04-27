@@ -1,0 +1,24 @@
+1，cmd参数过长
+报错：error: the dcs cmd length is 65, but the max length supported is 32
+
+2.修改如下：
+1、首先找到定义指令的数组，文件路径如下，打开文件搜索 cmds
+
+path：u-boot/drivers/video/screen/lcd_mipi.c
+
+在 rk_mipi_screen_init_dt 函数中定义的 cmds 数组长度只有 32，但是 mipi 屏最长的指令高达 65 (计算的时候多1个长度)
+
+u32 i,cmds[32];
+增大 rk_mipi_screen_init_dt 函数中 cmds 数组的长度，要超过 mipi 屏最长的指令长度。
+
+u32 i,cmds[128];
+3、找到定义指令数组的结构体，文件路径如下，打开文件搜索 cmds
+
+path：u-boot/drivers/video/transmitter/mipi_dsi.h
+
+cmds 数组定义在 struct dcs_cmd 结构体中，长度只有 32
+
+int cmds[32];
+增大 struct dcs_cmd 结构体中 cmds 数组的长度，要超过 mipi 屏最长的指令长度。
+
+u32 i,cmds[128];
