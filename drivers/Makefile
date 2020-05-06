@@ -114,6 +114,7 @@ obj-$(CONFIG_CPUQUIET_FRAMEWORK)+= cpuquiet/
 obj-y				+= mmc/
 obj-$(CONFIG_MEMSTICK)		+= memstick/
 obj-y				+= leds/
+obj-y                           += led_ctrl/
 obj-$(CONFIG_SWITCH)		+= switch/
 obj-$(CONFIG_INFINIBAND)	+= infiniband/
 obj-$(CONFIG_SGI_SN)		+= sn/
@@ -161,3 +162,5 @@ obj-$(CONFIG_GATOR)		+= gator/
 obj-y				+= headset_observe/
 obj-$(CONFIG_CORESIGHT)		+= coresight/
 obj-$(CONFIG_ANDROID)		+= android/
+obj-$(CONFIG_HELLO)		+= hello/
+

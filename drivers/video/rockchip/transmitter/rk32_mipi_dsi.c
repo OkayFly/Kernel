@@ -50,10 +50,10 @@
 #include <linux/rockchip/iomap.h>
 #include <linux/rockchip/cpu.h>
 
-#define	MIPI_DBG(x...)	/* printk(KERN_INFO x) */
+#define	MIPI_DBG(x...)	 printk(KERN_INFO x)
 
 #ifdef CONFIG_MIPI_DSI_LINUX
-#define	MIPI_TRACE(x...)	/* printk(KERN_INFO x) */
+#define	MIPI_TRACE(x...)	 printk(KERN_INFO x)
 #else
 #define	MIPI_TRACE(...)    \
 	do {\

@@ -1,0 +1,213 @@
+/*
+ * RockChip. LCD_BOX mipi 5.1 720*1280 4line
+ *
+ */
+#include <dt-bindings/input/input.h>
+/ {
+
+        /* about mipi */
+		disp_mipi_init: mipi_dsi_init{
+					compatible = "rockchip,mipi_dsi_init";
+					rockchip,screen_init	= <1>;
+					rockchip,dsi_lane		= <4>;
+					rockchip,dsi_hs_clk		= <450>;//
+					rockchip,mipi_dsi_num	= <1>;
+		};
+		disp_mipi_power_ctr: mipi_power_ctr {
+					compatible = "rockchip,mipi_power_ctr";
+					mipi_lcd_rst:mipi_lcd_rst {
+							compatible = "rockchip,lcd_rst";
+							rockchip,gpios = <&gpio8 GPIO_A7 GPIO_ACTIVE_HIGH>;
+							rockchip,delay = <10>;
+					};
+		};
+
+		disp_mipi_init_cmds: screen-on-cmds {
+			compatible = "rockchip,screen-on-cmds";
+			rockchip,cmd_debug = <0>;
+
+			rockchip,on-cmds1 {
+			compatible = "rockchip,on-cmds";
+			rockchip,cmd_type = <LPDT>;
+			rockchip,dsi_id = <0>;        
+			rockchip,cmd = <0x15 0x80 0xAC>;
+			rockchip,cmd_delay = <0>;
+		    };
+
+		    rockchip,on-cmds2 {
+			compatible = "rockchip,on-cmds";
+			rockchip,cmd_type = <LPDT>;
+			rockchip,dsi_id = <0>;        
+			rockchip,cmd = <0x15 0x81 0xB8>;
+			rockchip,cmd_delay = <0>;
+		    };
+
+		    rockchip,on-cmds3 {
+			compatible = "rockchip,on-cmds";
+			rockchip,cmd_type = <LPDT>;
+			rockchip,dsi_id = <0>;        
+			rockchip,cmd = <0x15 0x82 0x09>;
+			rockchip,cmd_delay = <0>;
+		    };
+
+
+
+
+		    rockchip,on-cmds4 {
+			compatible = "rockchip,on-cmds";
+			rockchip,cmd_type = <LPDT>;
+			rockchip,dsi_id = <0>;        
+			rockchip,cmd = <0x15 0x83 0x78>;
+			rockchip,cmd_delay = <0>;
+		    };
+
+
+		    rockchip,on-cmds5 {
+			compatible = "rockchip,on-cmds";
+			rockchip,cmd_type = <LPDT>;
+			rockchip,dsi_id = <0>;        
+			rockchip,cmd = <0x15 0x84 0x7F>;
+			rockchip,cmd_delay = <0>;
+		    };
+
+
+		    rockchip,on-cmds6{
+			compatible = "rockchip,on-cmds";
+			rockchip,cmd_type = <LPDT>;
+			rockchip,dsi_id = <0>;        
+			rockchip,cmd = <0x15 0x85 0xBB>;
+			rockchip,cmd_delay = <0>;
+		    };
+
+
+
+		    rockchip,on-cmds7 {
+			compatible = "rockchip,on-cmds";
+			rockchip,cmd_type = <LPDT>;
+			rockchip,dsi_id = <0>;        
+			rockchip,cmd = <0x15 0x86 0x70>;
+			rockchip,cmd_delay = <0>;
+		    };
+
+
+
+
+//sleep out
+		    rockchip,on-cmds18 {
+			compatible = "rockchip,on-cmds";
+			rockchip,cmd_type = <LPDT>;
+			rockchip,dsi_id = <0>;        
+			rockchip,cmd = <0x05 0x11>;
+			rockchip,cmd_delay = <250>;
+		    };
+
+		    
+///Display on
+		    rockchip,on-cmds19 {
+			compatible = "rockchip,on-cmds";
+			rockchip,cmd_type = <LPDT>;
+			rockchip,dsi_id = <0>;        
+			rockchip,cmd = <0x05 0X29>;
+			rockchip,cmd_delay = <50>;
+		    };
+		    
+		    rockchip,on-cmds194 {
+			compatible = "rockchip,on-cmds";
+			rockchip,cmd_type = <LPDT>;
+			rockchip,dsi_id = <0>;        
+			rockchip,cmd = <0x15 0X35 0x00>;
+			rockchip,cmd_delay = <0>;
+		    };
+
+		    };
+
+		disp_timings: display-timings {
+			native-mode = <&timing0>;
+			timing0: timing0 {
+				screen-type = <SCREEN_MIPI>;
+				lvds-format = <LVDS_8BIT_2>;
+				out-face    = <OUT_P888>;
+				clock-frequency = <38000000>;
+				hactive = <1024>;
+				vactive = <600>;
+
+				hback-porch = <120>;
+				hfront-porch = <120>;
+				vback-porch = <17>;
+				vfront-porch = <18>;
+				hsync-len = <7>;
+				vsync-len = <5>;
+				hsync-active = <0>;
+				vsync-active = <0>;
+				de-active = <0>;
+				pixelclk-active = <0>;
+				swap-rb = <0>;
+				swap-rg = <0>;
+				swap-gb = <0>;
+                     	};
+                     	timing1: timing1 {
+				screen-type = <SCREEN_RGB>;
+				out-face    = <OUT_P888>;
+				color-mode = <COLOR_YCBCR>;
+				clock-frequency = <38000000>;
+				hactive = <1024>;
+				vactive = <600>;
+				hback-porch = <120>;
+				hfront-porch = <120>;
+				vback-porch = <17>;
+				vfront-porch = <18>;
+				hsync-len = <7>;
+				vsync-len = <5>;
+				hsync-active = <0>;
+				vsync-active = <0>;
+				de-active = <0>;
+				pixelclk-active = <0>;
+				swap-rb = <0>;
+				swap-rg = <0>;
+				swap-gb = <0>;
+                     	};
+                     	timing2: timing2 {
+				screen-type = <SCREEN_RGB>;
+				out-face    = <OUT_P888>;
+				color-mode = <COLOR_YCBCR>;
+				clock-frequency = <297000000>;
+				hactive = <3840>;
+				vactive = <2160>;
+				hback-porch = <296>;
+				hfront-porch = <176>;
+				vback-porch = <72>;
+				vfront-porch = <8>;
+				hsync-len = <88>;
+				vsync-len = <10>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				de-active = <0>;
+				pixelclk-active = <0>;
+				swap-rb = <0>;
+				swap-rg = <0>;
+				swap-gb = <0>;
+                     	};
+
+                     	timing3: timing3{
+				screen-type = <SCREEN_RGB>;
+				out-face    = <OUT_P888>;
+				color-mode = <COLOR_YCBCR>;
+				clock-frequency = <148500000>;
+				hactive = <1920>;
+				vactive = <1080>;
+				hback-porch = <148>;
+				hfront-porch = <88>;
+				vback-porch = <36>;
+				vfront-porch = <4>;
+				hsync-len = <44>;
+				vsync-len = <5>;
+				hsync-active = <1>;
+				vsync-active = <1>;
+				de-active = <0>;
+				pixelclk-active = <0>;
+				swap-rb = <0>;
+				swap-rg = <0>;
+				swap-gb = <0>;
+                     	};
+               };
+};

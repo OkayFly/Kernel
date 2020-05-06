@@ -178,4 +178,5 @@ source "drivers/headset_observe/Kconfig"
 
 source "drivers/android/Kconfig"
 
+source "drivers/hello/Kconfig"
 endmenu
