@@ -211,7 +211,7 @@ extern u16 total_len;
 /*CFG for GT911*/
 u8 gtp_dat_gt11[] = {
 /* <1200, 1920>*/
-#include "FW_XR2507_070MFT18107A_GT911_V201_1920X1200_20190518.cfg" 
+#include "1694std_65_lsqGT911_Config_20200416_101556.cfg" 
 };
 
 //WGJ10187_GT9271_Config_20140623_104014_0X41.cfg

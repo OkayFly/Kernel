@@ -766,7 +766,9 @@ power_off:
 static int fts_power_init(struct fts_ts_data *data, bool on)
 {
 	int rc;
-
+	
+	printk("__%s()__\n",__func__);
+	printk("on:%d\n",on);
 	if (!on)
 	{
 		dev_err(&data->client->dev, "fts_power_init false \n");
@@ -777,15 +779,18 @@ static int fts_power_init(struct fts_ts_data *data, bool on)
 		rc = PTR_ERR(data->vdd);
 		dev_err(&data->client->dev, "Regulator get failed vdd rc=%d\n", rc);
 	}
-
+	
 	if (regulator_count_voltages(data->vdd) > 0) {
+		printk("regulator count voltages >0\n");
 		rc = regulator_set_voltage(data->vdd, FTS_VTG_MIN_UV, FTS_VTG_MAX_UV);
+		printk("regulator set voltage\n");
 		if (rc) {
 			dev_err(&data->client->dev, "Regulator set_vtg failed vdd rc=%d\n", rc);
 			goto reg_vdd_put;
 		}
 	}
 
+	goto just_return_power;
 	data->vcc_i2c = regulator_get(&data->client->dev, "vcc_i2c");
 	if (IS_ERR(data->vcc_i2c)) {
 		rc = PTR_ERR(data->vcc_i2c);
@@ -811,6 +816,9 @@ reg_vdd_set_vtg:
 reg_vdd_put:
 	regulator_put(data->vdd);
 	return rc;
+just_return_power:
+	printk("just_return_power\n");
+	return 0;
 }
 
 /*******************************************************************************
@@ -1250,14 +1258,14 @@ static int fts_get_dt_coords(struct device *dev, char *name,
 	struct property *prop;
 	struct device_node *np = dev->of_node;
 	int coords_size, rc;
-
+	printk("____%s() start____\n",__func__);
 	prop = of_find_property(np, name, NULL);	
 	if (!prop)
 		return -EINVAL;
 	if (!prop->value)
 		return -ENODATA;
 	
-
+	printk("prop->length:%d\n", prop->length);
 	coords_size = prop->length / sizeof(u32);
 	if (coords_size != FTS_COORDS_ARR_SIZE) {
 		dev_err(dev, "invalid %s\n", name);
@@ -1302,12 +1310,18 @@ static int fts_parse_dt(struct device *dev, struct fts_ts_platform_data *pdata)
 	struct property *prop;
 	u32 temp_val, num_buttons;
 	u32 button_map[MAX_BUTTONS];
+	printk("___%s() start____\n",__func__);
 
 	pdata->name = "focaltech";
 	rc = of_property_read_string(np, "focaltech,name", &pdata->name);
 	if (rc && (rc != -EINVAL)) {
 		dev_err(dev, "Unable to read name\n");
 	}
+	else
+	{
+		printk("fts_ts_platform_data->name:%s\n", pdata->name);
+	}
+	dev_err(dev, "start get dt coords\n");
 
 	rc = fts_get_dt_coords(dev, "focaltech,panel-coords", pdata);
 	if (rc && (rc != -EINVAL))
@@ -1318,6 +1332,8 @@ static int fts_parse_dt(struct device *dev, struct fts_ts_platform_data *pdata)
 		dev_err(dev, "Unable to get display-coords \n");
 
 	pdata->i2c_pull_up = of_property_read_bool(np, "focaltech,i2c-pull-up");
+	
+	printk("@@@@@@@@@@@@@@@@@@@@@@@@@i2c pull up:%d\n", pdata->i2c_pull_up);
 
 	pdata->no_force_update = of_property_read_bool(np, "focaltech,no-force-update");
 	/* reset, irq gpio info */
@@ -1327,11 +1343,14 @@ static int fts_parse_dt(struct device *dev, struct fts_ts_platform_data *pdata)
 		dev_err(dev, "Unable to get reset_gpio \n");
 	}
 
+	
+	printk("@@@@@@@@@@@@@@@@@@@@@@@@@reset gpio :%d\n", pdata->reset_gpio);
 	pdata->irq_gpio = of_get_named_gpio_flags(np, "focaltech,irq-gpio", 0, &pdata->irq_gpio_flags);
 	if (pdata->irq_gpio < 0)
 	{
 		dev_err(dev, "Unable to get irq_gpio \n");
 	}
+	printk("pdata irq_gpio:%d\n", pdata->irq_gpio);
 
 	pdata->fw_name = "ft_fw.bin";
 	rc = of_property_read_string(np, "focaltech,fw-name", &pdata->fw_name);
@@ -1424,6 +1443,7 @@ static int fts_parse_dt(struct device *dev, struct fts_ts_platform_data *pdata)
 			dev_err(dev, "Unable to read key codes\n");
 		}
 	}
+	printk("__%s()end__\n",__func__);
 
 	return 0;
 }
@@ -1656,8 +1676,12 @@ static int fts_ts_probe(struct i2c_client *client, const struct i2c_device_id *i
 	u8 reg_value;
 	u8 reg_addr;
 	int err, len;
-	printk("#####################fts ts probe ##################\n");
-        printk("#####################fts ts probe ##################\n");
+	
+	printk("____%s() start___\n", __func__);
+	printk("fts Driver build@%s, %s", __TIME__, __DATE__);
+	printk("fts I2C Address: 0x%02x\n", client->addr);
+	
+	
 	if (client->dev.of_node) {
 		pdata = devm_kzalloc(&client->dev,
 			sizeof(struct fts_ts_platform_data), GFP_KERNEL);
@@ -1738,20 +1762,32 @@ static int fts_ts_probe(struct i2c_client *client, const struct i2c_device_id *i
 	input_set_abs_params(input_dev, ABS_MT_TOUCH_MAJOR, 0, 0x0f, 0, 0);
 	input_set_abs_params(input_dev, ABS_MT_PRESSURE, 0, 0xff, 0, 0);
 
+	printk("__start input register device\n");
 	err = input_register_device(input_dev);
+	printk("__end input_register_device\n");
 	if (err) {
 		dev_err(&client->dev, "Input device registration failed\n");
 		goto free_inputdev;
 	}
-
+/*	
 	if (pdata->power_init) {
+		printk("pdata->power_init true\n");
 		err = pdata->power_init(true);
+		printk("pdata->power_init \n");
+
 		if (err) {
 			dev_err(&client->dev, "pdata->power_init power init failed");
 			goto unreg_inputdev;
 		}
 	} else {
+		printk(" failure \n");
 		err = fts_power_init(data, true);
+		printk(" fts_power_init\n");
+		printk("__just return 111 \n");
+         	goto just_return;
+		printk("__just return 222 \n");
+
+
 		if (err) {
 			dev_err(&client->dev, "fts_power_init power init failed");
 			goto unreg_inputdev;
@@ -1771,7 +1807,7 @@ static int fts_ts_probe(struct i2c_client *client, const struct i2c_device_id *i
 			goto pwr_deinit;
 		}
 	}
-
+*/
 	#ifdef MSM_NEW_VER
 	err = fts_ts_pinctrl_init(data);
 	if (!err && data->ts_pinctrl) {
@@ -1795,6 +1831,8 @@ static int fts_ts_probe(struct i2c_client *client, const struct i2c_device_id *i
 			"Failed to configure the gpios\n");
 		goto err_gpio_req;
 	}
+	else
+		printk("Success to configure the gpios\n");
 
 	/* make sure CTP already finish startup process */
 	msleep(data->pdata->soft_rst_dly);
@@ -1806,6 +1844,8 @@ static int fts_ts_probe(struct i2c_client *client, const struct i2c_device_id *i
 		err = -ESRCH;
 		goto exit_create_singlethread;
 	}
+	else
+		printk("dat->ts_workqueue");
 
 
 	/* check the controller id */
@@ -1826,15 +1866,22 @@ static int fts_ts_probe(struct i2c_client *client, const struct i2c_device_id *i
 	fts_i2c_client = client;
 	fts_input_dev = input_dev;
 
-	fts_get_upgrade_array();
+	//fts_get_upgrade_array();
+	
+	client->irq = pdata->irq_gpio;
 
+	printk("__start request   threader irq\n");
 	err = request_threaded_irq(client->irq, NULL, fts_ts_interrupt,
 				pdata->irqflags | IRQF_ONESHOT | IRQF_TRIGGER_FALLING,
 				client->dev.driver->name, data);
+	printk("irq:%d\n, devname:%s\n", client->irq, client->dev.driver->name);
+	printk("__end request threader irq\n");
 	if (err) {
 		dev_err(&client->dev, "request irq failed\n");
 		goto free_gpio;
 	}
+	
+	goto just_return;
 
 	disable_irq(client->irq);
 
@@ -1943,15 +1990,15 @@ static int fts_ts_probe(struct i2c_client *client, const struct i2c_device_id *i
 
 	dev_dbg(&client->dev, "touch threshold = %d\n", reg_value * 4);
 
-	fts_update_fw_ver(data);
-	fts_update_fw_vendor_id(data);
+	//fts_update_fw_ver(data);
+	//fts_update_fw_vendor_id(data);
 
 	FTS_STORE_TS_INFO(data->ts_info, data->family_id, data->pdata->name,
 			data->pdata->num_max_touches, data->pdata->group_id,
 			data->pdata->fw_vkey_support ? "yes" : "no",
 			data->pdata->fw_name, data->fw_ver[0],
 			data->fw_ver[1], data->fw_ver[2]);
-
+/*
 	#ifdef FTS_APK_DEBUG
 		fts_create_apk_debug_channel(client);
 	#endif
@@ -1959,15 +2006,16 @@ static int fts_ts_probe(struct i2c_client *client, const struct i2c_device_id *i
 	#ifdef FTS_SYSFS_DEBUG
 		fts_create_sysfs(client);
 	#endif
+*/
 
-	
+/*	
 	#ifdef FTS_CTL_IIC
 		if (fts_rw_iic_drv_init(client) < 0)	
 		{
 			dev_err(&client->dev, "%s:[FTS] create fts control iic driver failed\n",	__func__);
 		}
 	#endif
-	
+*/	
 
 	#if FTS_GESTRUE_EN
 		fts_Gesture_init(input_dev);
@@ -2000,8 +2048,11 @@ static int fts_ts_probe(struct i2c_client *client, const struct i2c_device_id *i
 #endif
 
 	enable_irq(client->irq);
-
+		
+	printk("__%s() end__\n", __func__);
+	
 	return 0;
+
 
 free_debug_dir:
 	debugfs_remove_recursive(data->dir);
@@ -2028,8 +2079,11 @@ irq_free:
 free_gpio:
 	if (gpio_is_valid(pdata->reset_gpio))
 		gpio_free(pdata->reset_gpio);
+	printk("xxx\n");
 	if (gpio_is_valid(pdata->irq_gpio))
 		gpio_free(pdata->irq_gpio);
+	printk("xxx2\n");
+	return;
 exit_create_singlethread:
 	printk("==singlethread error =\n");
 	i2c_set_clientdata(client, NULL);
@@ -2063,7 +2117,11 @@ unreg_inputdev:
 free_inputdev:
 	input_free_device(input_dev);
 	return err;
+just_return:
+	printk("__just return \n");
+	return 0;
 }
+
 
 /*******************************************************************************
 *  Name: fts_ts_remove
@@ -2091,7 +2149,8 @@ static int fts_ts_remove(struct i2c_client *client)
 		data->psensor_pdata = NULL;
 	}
 #endif
-	
+
+/*	
 #ifdef FTS_APK_DEBUG
 		fts_release_apk_debug_channel();
 #endif
@@ -2104,7 +2163,7 @@ static int fts_ts_remove(struct i2c_client *client)
 #ifdef FTS_CTL_IIC
 		fts_rw_iic_drv_exit();
 #endif
-
+*/
 
 #if defined(CONFIG_FB)
 	if (fb_unregister_client(&data->fb_notif))

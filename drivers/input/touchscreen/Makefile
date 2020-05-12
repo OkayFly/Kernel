@@ -88,3 +88,7 @@ obj-$(CONFIG_TOUCHSCREEN_GSLX680_MT70817V2)	+= rockchip_gslX680_firefly.o
 obj-$(CONFIG_TOUCHSCREEN_GSLX680_MT70817V2) += gsl_point_id_mt70817v2.o
 $(obj)/gsl_point_id_mt70817v2.o: $(srctree)/$(obj)/gsl_point_id_mt70817v2
 	cp $(srctree)/$(obj)/gsl_point_id_mt70817v2 $(obj)/gsl_point_id_mt70817v2.o
+
+
+obj-$(CONFIG_TOUCHSCREEN_FTS) += ft5426/
+

@@ -74,12 +74,12 @@
 /*******************************************************************************
 * Private constant and macro definitions using #define
 *******************************************************************************/
-#define FTS_DRIVER_INFO  "Qualcomm_Ver 1.3.1 2015-07-06"
+#define FTS_DRIVER_INFO  "Rk3288_Ver 1.0.1 2020-05-05"
 #define FT5X06_ID		0x55
 #define FT5X16_ID		0x0A
 #define FT5X36_ID		0x14
 #define FT6X06_ID		0x06
-#define FT6X36_ID       	0x36
+#define FT6X36_ID       0x36
 
 #define FT5316_ID		0x0A
 #define FT5306I_ID		0x55

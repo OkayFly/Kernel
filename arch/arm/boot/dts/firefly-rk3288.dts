@@ -1,6 +1,7 @@
 /dts-v1/; 
 #include "rk3288.dtsi"
-#include "lcd-box.dtsi"
+//#include "lcd-box.dtsi"
+#include "lcd-wks70170-rgb1024x600.dtsi"
 #include <dt-bindings/input/input.h>
 
 / {
@@ -628,7 +629,7 @@
 /*$_rbox_$_modify_$_end*/
 
 &fb {
-	rockchip,disp-mode = <DUAL>;
+	rockchip,disp-mode = <NO_DUAL>;
 	rockchip,uboot-logo-on = <1>;
 	rockchip,disp-policy = <DISPLAY_POLICY_BOX_TEMP>;
 };
@@ -646,16 +647,26 @@
 	status = "okay";
 	rockchip,iommu-enabled = <1>;
 	rockchip,prop = <PRMRY>;
+	power_ctr: power_ctr {
+		rockchip,debug = <1>;
+		power_enable = <1>;
+		lcd_rst:lcd_rst {
+			rockchip,power_type = <GPIO>;
+			gpio = <&gpio8 GPIO_A6 GPIO_ACTIVE_HIGH>;
+			rockchip,delay = <100>;
+		};
+	};
+
 };
 
 &lcdc1 {
-	status = "okay";
+	status = "disabled";
 	rockchip,iommu-enabled = <1>;
 	rockchip,prop = <EXTEND>;
 };
 
 &hdmi {
-	status = "okay";
+	status = "disabled";
 	rockchips,hdmi_audio_source = <0>;
 	hdmi_cec = <0>;
 };
@@ -737,19 +748,19 @@
 	support-pvtm = <0>;
 	pvtm-operating-points = <
 		/* KHz    uV 	pvtm margin*/
-		126000 900000	25000
-		216000 900000	25000
-		312000 900000	25000
-		408000 900000	25000
-		600000 950000	50000
-		696000 950000	25000
-		816000 1000000	25000
-		1008000 1050000	25000
-		1200000 1100000	25000
-		1416000 1200000	25000
-		1512000 1300000	25000
-		1608000 1350000	25000
-		1704000 1350000	25000
+//		126000 900000	25000
+//		216000 900000	25000
+//		312000 900000	25000
+//		408000 900000	25000
+//		600000 950000	50000
+//		696000 950000	25000
+//		816000 1000000	25000
+//		1008000 1050000	25000
+//		1200000 1100000	25000
+//		1416000 1200000	25000
+//		1512000 1300000	25000
+//		1608000 1350000	25000
+//		1704000 1350000	25000
 		1800000 1350000	25000
 		>;
 	status="okay";
@@ -759,9 +770,9 @@
 	operating-points = <
 		/* KHz    uV */
 //		100000 900000
-		200000 900000
-		300000 950000
-		420000 1100000
+//		200000 900000
+//		300000 950000
+//		420000 1100000
 		500000 1150000
 	//	600000 1250000
 		>;
@@ -771,9 +782,9 @@
 &clk_ddr_dvfs_table {
 	operating-points = <
 		/* KHz    uV */
-		200000 1075000
-		300000 1075000		
-		456000 1125000
+//		200000 1075000
+//		300000 1075000		
+//		456000 1125000
 		528000 1150000
 		>;
 

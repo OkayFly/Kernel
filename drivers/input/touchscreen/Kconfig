@@ -930,4 +930,13 @@ config TOUCHSCREEN_TPS6507X
 	  To compile this driver as a module, choose M here: the
 	  module will be called tps6507x_ts.
 
+
+config TOUCHSCREEN_FTS
+	tristate "FocalTech touch screen ft5426DQ8 support for rockchip based platform"
+	help
+	  Say Y here if you have a touchscreen interface using the
+	  ft5426, and your board-specific initialization
+	  code includes that in its table of IIC devices.
+	  If unsure, say N.
+
 endif

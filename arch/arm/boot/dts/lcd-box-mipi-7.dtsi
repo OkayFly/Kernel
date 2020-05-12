@@ -8,7 +8,7 @@
         /* about mipi */
 		disp_mipi_init: mipi_dsi_init{
 					compatible = "rockchip,mipi_dsi_init";
-					rockchip,screen_init	= <1>;
+					rockchip,screen_init	= <0>;
 					rockchip,dsi_lane		= <4>;
 					rockchip,dsi_hs_clk		= <450>;//
 					rockchip,mipi_dsi_num	= <1>;

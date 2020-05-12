@@ -129,7 +129,7 @@ enum hdmi_video_infomation_code {
 	HDMI_3840X2160P_30HZ_4_3,	/*105*/
 	HDMI_3840X2160P_50HZ_4_3,
 	HDMI_3840X2160P_60HZ_4_3,
-       	HDMI_1024X600P_60HZ, /*108*/
+	//HDMI_1024X600P_60HZ, /*108*/
 };
 
 /* HDMI Extended Resolution */
@@ -476,7 +476,8 @@ struct hdmi {
 #define HDMI_AUTO_CONFIG		false
 
 /* HDMI default vide mode */
-#define HDMI_VIDEO_DEFAULT_MODE			HDMI_1024X600P_60HZ 
+#define HDMI_VIDEO_DEFAULT_MODE		       HDMI_1280X720P_60HZ
+					//	HDMI_1024X600P_60HZ 
 						/*HDMI_1280X720P_60HZ*/
 						/*HDMI_1920X1080P_60HZ*/
 #define HDMI_VIDEO_DEFAULT_COLORMODE		HDMI_COLOR_AUTO
